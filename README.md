@@ -78,9 +78,11 @@ Initializing LUT implementation... Done.
 ## `HAVE_BUILTIN_POPCOUNT`
 
 If you want to try the GCC extension `__builtin_popcount`, compile with 
-`-DHAVE_BUILTIN_POPCOUNT`. To actually use the `POPCOUNT` instruction, you
-will likely need additional flags, such as `-march=native -mtune=native` (GCC)
-or `-march=native -mcpu=native` (Clang).
+`-DHAVE_BUILTIN_POPCOUNT`. To actually use your CPU's native instruction (if
+it has one), you will likely need additional flags, such as `-march=native
+-mtune=native` (GCC) or `-march=native -mcpu=native` (Clang).
+
+When built with this macro defined, `Ver D` will appear in the results.
 
 The following data is from my Phenom™ II X4 965 built this way:
 
