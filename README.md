@@ -41,7 +41,7 @@ Meanwhile, `popcnt32_z` takes a lot longer than the others.
 The following output comes from my M1 Max based MacBook Pro, compiled with
 `clang -mtune=native -mcpu-native -DHAVE_BUILTIN_POPCOUNT -O3 -o bit_count
 bit_count.c` with Apple Clang version 13.1.6 (clang-1316.0.21.2.3).  (See
-below for details on `HAVE_BUILTIN_POPCOUNT`.
+below for details on `HAVE_BUILTIN_POPCOUNT`.)
 
 ```
 $ ./bit_count
