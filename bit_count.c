@@ -34,7 +34,7 @@ static int popcnt32_b(uint32_t x) {
   x = (x + (x >> 4)) & kMu2;
   x += x >> 8;
   x += x >> 16;
-  return (int)(x & 63);
+  return (uint8_t)x;
 }
 
 static int popcnt32_c(uint32_t x) {
