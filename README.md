@@ -39,21 +39,22 @@ Meanwhile, `popcnt32_z` takes a lot longer than the others.
 ## Data
 
 The following output comes from my M1 Max based MacBook Pro, compiled with
-`clang -mtune=native -O3 -o bit_count bit_count.c` with Apple clang version
-13.1.6 (clang-1316.0.21.2.3).  **NOTE: STALE DATA**
+`clang -mtune=native -mcpu-native -DHAVE_BUILTIN_POPCOUNT -O3 -o bit_count
+bit_count.c` with Apple Clang version 13.1.6 (clang-1316.0.21.2.3).  (See
+below for details on `HAVE_BUILTIN_POPCOUNT`.
 
 ```
 $ ./bit_count
 Testing implementations...
 Errs: 0  OK: 4294967296
 Initializing LUT implementation... Done.
-Null:           6055631 clocks
-Ver A:          8167488 clocks
-Ver B:          8268174 clocks
-Ver C:          7897421 clocks
-Ver Z:         34834314 clocks
-Sums: 1000000000 1000000000 1000000000 1000000000
-Null sum: 7FFFFFFF80000000
+  Null:           4225023 clocks  7FFFFFFF80000000
+ Ver A:           7921125 clocks  1000000000
+ Ver B:           7544140 clocks  1000000000
+ Ver C:           7032806 clocks  1000000000
+ Ver D:           4237567 clocks  1000000000
+ Ver E:           5532954 clocks  1000000000
+ Ver Z:          35113958 clocks  1000000000
 $
 ```
 
