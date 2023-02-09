@@ -74,11 +74,12 @@ Initializing LUT implementation... Done.
  Ver Z:         304970000 clocks  1000000000
 ```
 
-## `HAVE_BUILTIN_POPCNT`
+## `HAVE_BUILTIN_POPCOUNT`
 
-If you want to try the GCC extension `__builtin_popcnt`, compile with 
-`-DHAVE_BUILTIN_POPCNT`. To actually use the `POPCNT` instruction, you
-will likely need additional flags, such as `-march=native -mtune=native`.
+If you want to try the GCC extension `__builtin_popcount`, compile with 
+`-DHAVE_BUILTIN_POPCOUNT`. To actually use the `POPCOUNT` instruction, you
+will likely need additional flags, such as `-march=native -mtune=native` (GCC)
+or `-march=native -mcpu=native` (Clang).
 
 The following data is from my Phenom™ II X4 965 built this way:
 
