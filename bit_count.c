@@ -69,8 +69,22 @@ static int popcnt32_z(uint32_t x) {
   return popcnt32_lut[x];
 }
 
-#define CRC64_POLY (0xC96C5795D7870F42ull)  // CRC-64-ECMA
 #define CRC32_POLY (0xEDB88320)             // CRC-32 (IEEE)
+
+#define popcnt32_null(x) (x)
+
+#define BENCH(name,func)                                                      \
+    do {                                                                      \
+      volatile uint64_t sum = 0;                                              \
+      t1 = clock();                                                           \
+      do {                                                                    \
+        sum += func(r);                                                       \
+        r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);                              \
+      } while (r != 1);                                                       \
+      t2 = clock();                                                           \
+      printf("%6s:   %15lld clocks  %"PRIX64"\n", name,                       \
+             (unsigned long long)t2 - t1, sum);                               \
+    } while (0)
 
 int main() {
   int64_t errs = 0, ok = 0;
@@ -106,80 +120,13 @@ int main() {
 
   clock_t t1, t2;
   uint32_t r = 1;
-  volatile uint64_t sn = 0, sa = 0, sb = 0, sc = 0, sd = 0, sz = 0;
 
-  t1 = clock();
-  r = 1;
-  sn = 0;
-  do {
-    sn += r;
-    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
-  } while (r != 1);
-  t2 = clock();
-
-  printf("Null:   %15lld clocks\n", (unsigned long long)t2 - t1);
-
-  t1 = clock();
-  r = 1;
-  sa = 0;
-  do {
-    sa += popcnt32_a(r);
-    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
-  } while (r != 1);
-  t2 = clock();
-
-  printf("Ver A:  %15lld clocks\n", (unsigned long long)t2 - t1);
-
-  t1 = clock();
-  r = 1;
-  sb = 0;
-  do {
-    sb += popcnt32_b(r);
-    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
-  } while (r != 1);
-  t2 = clock();
-
-  printf("Ver B:  %15lld clocks\n", (unsigned long long)t2 - t1);
-
-  t1 = clock();
-  r = 1;
-  sc = 0;
-  do {
-    sc += popcnt32_c(r);
-    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
-  } while (r != 1);
-  t2 = clock();
-
-  printf("Ver C:  %15lld clocks\n", (unsigned long long)t2 - t1);
-
+  BENCH("Null",  popcnt32_null);
+  BENCH("Ver A", popcnt32_a);
+  BENCH("Ver B", popcnt32_b);
+  BENCH("Ver C", popcnt32_c);
 #ifdef HAVE_BUILTIN_POPCOUNT
-  t1 = clock();
-  r = 1;
-  sd = 0;
-  do {
-    sd += popcnt32_d(r);
-    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
-  } while (r != 1);
-  t2 = clock();
-
-  printf("Ver D:  %15lld clocks\n", (unsigned long long)t2 - t1);
-#else
-  sd = sa;
+  BENCH("Ver D", popcnt32_d);
 #endif
-
-  t1 = clock();
-  r = 1;
-  sz = 0;
-  do {
-    sz += popcnt32_z(r);
-    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
-  } while (r != 1);
-  t2 = clock();
-
-  printf("Ver Z:  %15lld clocks\n", (unsigned long long)t2 - t1);
-
-  printf("Sums: %"PRIX64" %"PRIX64" %"PRIX64" %"PRIX64" %"PRIX64"\n",
-         sa, sb, sc, sd, sz);
-
-  printf("Null sum: %"PRIX64"\n", sn);
+  BENCH("Ver Z", popcnt32_z);
 }
