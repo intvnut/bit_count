@@ -23,7 +23,8 @@ The benchmark first checks that the three computational methods (`popcnt32_a`,
 input range.  This takes a few seconds on a modern computer.
 
 Next, it initializes a lookup table for a fourth version, `popcnt32_z`, that
-merely looks up the value in the lookup table.
+merely looks up the value in the lookup table.  A fifth version, `popcnt32_e`,
+uses the first 256 entries of this same table for byte-at-a-time lookup.
 
 Finally, it measures the amount of time it takes to run through the entire
 2^32 - 1 sequence of the IEEE CRC-32, counting the 1 bits in each state. In
@@ -39,7 +40,7 @@ Meanwhile, `popcnt32_z` takes a lot longer than the others.
 
 The following output comes from my M1 Max based MacBook Pro, compiled with
 `clang -mtune=native -O3 -o bit_count bit_count.c` with Apple clang version
-13.1.6 (clang-1316.0.21.2.3).
+13.1.6 (clang-1316.0.21.2.3).  **NOTE: STALE DATA**
 
 ```
 $ ./bit_count
@@ -65,13 +66,12 @@ $ ./bit_count
 Testing implementations...
 Errs: 0  OK: 4294967296
 Initializing LUT implementation... Done.
-Null:          13010000 clocks
-Ver A:         25580000 clocks
-Ver B:         27050000 clocks
-Ver C:         22970000 clocks
-Ver Z:        479230000 clocks
-Sums: 1000000000 1000000000 1000000000 1000000000
-Null sum: 7FFFFFFF80000000
+  Null:           8650000 clocks  7FFFFFFF80000000
+ Ver A:          15610000 clocks  1000000000
+ Ver B:          16450000 clocks  1000000000
+ Ver C:          13080000 clocks  1000000000
+ Ver E:          13240000 clocks  1000000000
+ Ver Z:         304970000 clocks  1000000000
 ```
 
 ## `HAVE_BUILTIN_POPCNT`
@@ -87,14 +87,13 @@ $ ./bit_count
 Testing implementations...
 Errs: 0  OK: 4294967296
 Initializing LUT implementation... Done.
-Null:          13090000 clocks
-Ver A:         25580000 clocks
-Ver B:         27060000 clocks
-Ver C:         22960000 clocks
-Ver D:         15050000 clocks
-Ver Z:        481260000 clocks
-Sums: 1000000000 1000000000 1000000000 1000000000 1000000000
-Null sum: 7FFFFFFF80000000
+  Null:           8650000 clocks  7FFFFFFF80000000
+ Ver A:          15610000 clocks  1000000000
+ Ver B:          16450000 clocks  1000000000
+ Ver C:          13080000 clocks  1000000000
+ Ver D:          11330000 clocks  1000000000
+ Ver E:          13240000 clocks  1000000000
+ Ver Z:         304970000 clocks  1000000000
 $
 ```
 

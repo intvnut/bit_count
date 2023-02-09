@@ -69,6 +69,14 @@ static int popcnt32_z(uint32_t x) {
   return popcnt32_lut[x];
 }
 
+// Byte-at-a-time lookup table reuses popcnt32_z's LUT.
+static int popcnt32_e(uint32_t x) {
+  return popcnt32_lut[x & 0xFF]
+       + popcnt32_lut[(x >> 8) & 0xFF]
+       + popcnt32_lut[(x >> 16) & 0xFF]
+       + popcnt32_lut[(x >> 24) & 0xFF];
+}
+
 #define CRC32_POLY (0xEDB88320)             // CRC-32 (IEEE)
 
 #define popcnt32_null(x) (x)
@@ -110,7 +118,7 @@ int main() {
 #endif
 
     if (a != b || a != c || a != d) {
-      fprintf(stderr, "%08"PRIX64": %d %d %d %d\n", i, a, b, c, d);
+      fprintf(stderr, "%08"PRIX64": %d %d %d %d %d\n", i, a, b, c, d);
       errs++;
       if (errs > 10) {
         break;
@@ -136,5 +144,6 @@ int main() {
 #ifdef HAVE_BUILTIN_POPCOUNT
   BENCH("Ver D", popcnt32_d);
 #endif
+  BENCH("Ver E", popcnt32_e);
   BENCH("Ver Z", popcnt32_z);
 }
