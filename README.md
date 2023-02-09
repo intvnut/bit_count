@@ -56,6 +56,25 @@ Null sum: 7FFFFFFF80000000
 $
 ```
 
+And this data comes from my aging AMD Phenom™ II X4 965 machine that has
+plenty of DDR3 DRAM.  My machine wasn't swapping during this test.  It just
+has that much less memory bandwidth than the Apple M1 Max, apparently?
+
+```
+$ ./bit_count
+Testing implementations...
+Errs: 0  OK: 4294967296
+Initializing LUT implementation... Done.
+Null:          13010000 clocks
+Ver A:         25580000 clocks
+Ver B:         27050000 clocks
+Ver C:         22970000 clocks
+Ver D:        479230000 clocks
+Sums: 1000000000 1000000000 1000000000 1000000000
+Null sum: 7FFFFFFF80000000
+```
+
+
 ____
 
 Copyright © 2023, Joe Zbiciak <joe.zbiciak@leftturnonly.info>  
