@@ -79,15 +79,15 @@ static int popcnt32_z(uint32_t x) {
       t1 = clock();                                                           \
       do {                                                                    \
         sum += func(r);                                                       \
-        r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);                              \
+        r = (r >> 1) ^ (-(r & 1) & CRC32_POLY);                               \
         sum += func(r);                                                       \
-        r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);                              \
+        r = (r >> 1) ^ (-(r & 1) & CRC32_POLY);                               \
         sum += func(r);                                                       \
-        r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);                              \
+        r = (r >> 1) ^ (-(r & 1) & CRC32_POLY);                               \
         sum += func(r);                                                       \
-        r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);                              \
+        r = (r >> 1) ^ (-(r & 1) & CRC32_POLY);                               \
         sum += func(r);                                                       \
-        r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);                              \
+        r = (r >> 1) ^ (-(r & 1) & CRC32_POLY);                               \
       } while (r != 1);                                                       \
       t2 = clock();                                                           \
       printf("%6s:   %15lld clocks  %"PRIX64"\n", name,                       \
