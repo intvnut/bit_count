@@ -56,7 +56,7 @@ static uint8_t *popcnt32_lut;
 static void init_popcnt32_lut(void) {
   popcnt32_lut = realloc(popcnt32_lut, UINT32_MAX + 1ull);
   if (!popcnt32_lut) {
-    fprintf(stderr, "OOM.");
+    fprintf(stderr, "OOM!\n");
     exit(1);
   }
 
