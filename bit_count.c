@@ -45,6 +45,12 @@ static int popcnt32_c(uint32_t x) {
   return (int)x;
 }
 
+#ifdef HAVE_BUILTIN_POPCOUNT
+static int popcnt32_d(uint32_t x) {
+  return __builtin_popcount(x);
+}
+#endif
+
 static uint8_t *popcnt32_lut;
 
 static void init_popcnt32_lut(void) {
@@ -59,7 +65,7 @@ static void init_popcnt32_lut(void) {
   }
 }
 
-static int popcnt32_d(uint32_t x) {
+static int popcnt32_z(uint32_t x) {
   return popcnt32_lut[x];
 }
 
@@ -75,9 +81,14 @@ int main() {
     const int a = popcnt32_a(i);
     const int b = popcnt32_b(i);
     const int c = popcnt32_c(i);
+#ifdef HAVE_BUILTIN_POPCOUNT
+    const int d = popcnt32_d(i);
+#else
+    const int d = c;
+#endif
 
-    if (a != b || a != c) {
-      fprintf(stderr, "%08"PRIX64": %d %d %d\n", i, a, b, c);
+    if (a != b || a != c || a != d) {
+      fprintf(stderr, "%08"PRIX64": %d %d %d %d\n", i, a, b, c, d);
       errs++;
       if (errs > 10) {
         break;
@@ -95,7 +106,7 @@ int main() {
 
   clock_t t1, t2;
   uint32_t r = 1;
-  volatile uint64_t sn = 0, sa = 0, sb = 0, sc = 0, sd = 0;
+  volatile uint64_t sn = 0, sa = 0, sb = 0, sc = 0, sd = 0, sz = 0;
 
   t1 = clock();
   r = 1;
@@ -141,6 +152,7 @@ int main() {
 
   printf("Ver C:  %15lld clocks\n", (unsigned long long)t2 - t1);
 
+#ifdef HAVE_BUILTIN_POPCOUNT
   t1 = clock();
   r = 1;
   sd = 0;
@@ -151,9 +163,23 @@ int main() {
   t2 = clock();
 
   printf("Ver D:  %15lld clocks\n", (unsigned long long)t2 - t1);
+#else
+  sd = sa;
+#endif
 
-  printf("Sums: %"PRIX64" %"PRIX64" %"PRIX64" %"PRIX64"\n",
-         sa, sb, sc, sd);
+  t1 = clock();
+  r = 1;
+  sz = 0;
+  do {
+    sz += popcnt32_z(r);
+    r = (r >> 1) ^ (r & 1 ? CRC32_POLY : 0);
+  } while (r != 1);
+  t2 = clock();
+
+  printf("Ver Z:  %15lld clocks\n", (unsigned long long)t2 - t1);
+
+  printf("Sums: %"PRIX64" %"PRIX64" %"PRIX64" %"PRIX64" %"PRIX64"\n",
+         sa, sb, sc, sd, sz);
 
   printf("Null sum: %"PRIX64"\n", sn);
 }
