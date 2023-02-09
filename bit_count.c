@@ -118,7 +118,7 @@ int main() {
 #endif
 
     if (a != b || a != c || a != d) {
-      fprintf(stderr, "%08"PRIX64": %d %d %d %d %d\n", i, a, b, c, d);
+      fprintf(stderr, "%08"PRIX64": %d %d %d %d\n", i, a, b, c, d);
       errs++;
       if (errs > 10) {
         break;
